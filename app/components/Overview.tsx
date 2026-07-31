@@ -10,9 +10,9 @@ export default function Overview() {
 
   const overviewImages = [
     { src: "/o1.png", alt: "Grand Entrance & Architecture" },
-    { src: "/o2.png", alt: "Art Deco Tower Elevation" },
-    { src: "/o3.png", alt: "Peacock-Inspired Landscape" },
-    { src: "/o4.png", alt: "Luxury Living Spaces" },
+    { src: "/banner_1.png", alt: "Art Deco Tower Elevation" },
+    { src: "/o_3.png", alt: "Peacock-Inspired Landscape" },
+    { src: "/o_4.png", alt: "Luxury Living Spaces" },
   ];
 
   return (

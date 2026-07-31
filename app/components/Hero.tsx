@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { CheckCircle2 } from "lucide-react";
 
-const banners = ["/banner1.png", "/banner2.png", "/banner3.png",];
+const banners = ["/banner_1.png", "/banner2.png", "/banner3.png",];
 
 export default function Hero() {
   const [currentBanner, setCurrentBanner] = useState(0);
