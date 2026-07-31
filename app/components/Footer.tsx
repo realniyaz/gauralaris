@@ -135,15 +135,9 @@ export default function Footer() {
             <p>© {new Date().getFullYear()} Gaur Alaris. All rights reserved.</p>
           </div>
 
-          <div className="w-full md:w-1/3 text-center">
-            <span className="text-[#dfc184]/90 tracking-wider font-medium text-[10px]">
-              RERA No: UPRERAPRJ950965/07/2026
-            </span>
-          </div>
-
           <div className="w-full md:w-1/3 text-center md:text-right flex items-center justify-center md:justify-end gap-1.5">
-            <span>Powered & Managed by</span>
-            <span className="text-[#dfc184] font-semibold tracking-wider">MARGAUX TECH</span>
+            <span>RERA No:</span>
+            <span className="text-[#dfc184] font-semibold tracking-wider">UPRERAPRJ950965/07/2026</span>
           </div>
 
         </div>

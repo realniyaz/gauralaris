@@ -9,7 +9,7 @@ export default function Overview() {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   const overviewImages = [
-    { src: "/o1.png", alt: "Grand Entrance & Architecture" },
+    { src: "/o1.png", alt: "Luxurious Bedrooms" },
     { src: "/banner_1.png", alt: "Art Deco Tower Elevation" },
     { src: "/o_3.png", alt: "Peacock-Inspired Landscape" },
     { src: "/o_4.png", alt: "Luxury Living Spaces" },
