@@ -1,26 +1,64 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  --color-brand-dark: #0b231e;
+  --color-brand-green: #113f36;
+  --color-brand-emerald: #1a4d43;
+  --color-brand-gold: #c5a059;
+  --color-brand-lightGold: #dfc184;
+  --color-brand-darkGold: #9a7b3c;
+  --color-brand-cream: #fbf9f5;
+  --color-brand-charcoal: #181818;
+
+  --font-serif: var(--font-playfair), Playfair Display, serif;
+  --font-sans: var(--font-inter), Inter, sans-serif;
+
+  --shadow-luxury: 0 20px 40px -15px rgba(197, 160, 89, 0.15);
+  --shadow-goldGlow: 0 0 25px rgba(197, 160, 89, 0.3);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  body {
+    @apply bg-brand-dark text-brand-cream font-sans antialiased selection:bg-brand-gold selection:text-brand-dark;
+    scroll-behavior: smooth;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* Custom Metallic Gold Text Gradient Matching the Alaris Logo */
+.text-gold-gradient {
+  background: linear-gradient(135deg, #fff2cc 0%, #dfc184 35%, #c5a059 70%, #9a7b3c 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Luxury Border Styling */
+.border-gold-subtle {
+  border-color: rgba(197, 160, 89, 0.3);
+}
+
+.border-gold-active {
+  border-color: rgba(197, 160, 89, 0.8);
+}
+
+/* Luxury Glassmorphism Card */
+.glass-luxury {
+  background: rgba(17, 63, 54, 0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(197, 160, 89, 0.25);
+}
+
+/* Custom Scrollbar for Luxury Aesthetics */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #0b231e;
+}
+::-webkit-scrollbar-thumb {
+  background: #c5a059;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #dfc184;
 }
