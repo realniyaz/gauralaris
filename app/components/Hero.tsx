@@ -1,14 +1,15 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { CheckCircle2 } from "lucide-react";
 
-const banners = ["/banner_1.png", "/banner2.png", "/banner3.png",];
+const banners = ["/banner_1.png", "/banner2.png", "/banner3.png"];
 
 export default function Hero() {
+  const router = useRouter();
   const [currentBanner, setCurrentBanner] = useState(0);
-  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({ name: "", email: "", phone: "" });
 
   // Cinematic automatic background slideshow every 6 seconds
@@ -19,16 +20,37 @@ export default function Hero() {
     return () => clearInterval(timer);
   }, []);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.name || !formData.phone) return;
-    setIsSubmitted(true);
+
+    setIsSubmitting(true);
+
+    try {
+      // Send lead data via Resend API endpoint
+      await fetch("/api/send-lead", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          phone: formData.phone,
+          domain: typeof window !== "undefined" ? window.location.hostname : "",
+        }),
+      });
+    } catch (error) {
+      console.error("Submission error:", error);
+    } finally {
+      setIsSubmitting(false);
+      // Redirect to Thank You page where Taboola Pixel fires
+      router.push("/thank-you");
+    }
   };
 
   return (
     <section id="hero" className="relative w-full min-h-screen bg-[#0b231e] pt-20 pb-12 flex flex-col justify-center">
       
-      {/* 1. Mobile: Full clean banner image first (No clutter) / Desktop: Absolute Cinematic BG */}
+      {/* 1. Mobile: Full clean banner image first / Desktop: Absolute Cinematic BG */}
       <div className="relative w-full h-[55vh] sm:h-[65vh] lg:absolute lg:inset-0 lg:h-full z-0 overflow-hidden">
         <AnimatePresence mode="wait">
           <motion.div
@@ -113,80 +135,59 @@ export default function Hero() {
               <p className="text-xs text-[#0b231e]/70 mt-1 font-sans">Get exclusive floor plans, pricing & e-brochure</p>
             </div>
 
-            {isSubmitted ? (
-              <motion.div 
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className="py-8 text-center space-y-3"
-              >
-                <div className="w-14 h-14 bg-[#c5a059]/10 border border-[#c5a059] rounded-full flex items-center justify-center mx-auto text-[#c5a059]">
-                  <CheckCircle2 className="w-7 h-7" />
-                </div>
-                <h4 className="text-lg font-serif text-[#0b231e]">Thank You</h4>
-                <p className="text-xs text-[#0b231e]/80 max-w-xs mx-auto font-sans">
-                  Our luxury property advisor will get in touch with you shortly.
-                </p>
-                <button 
-                  onClick={() => setIsSubmitted(false)}
-                  className="text-xs text-[#c5a059] underline tracking-wider pt-2 hover:text-[#0b231e] font-sans"
-                >
-                  Send another request
-                </button>
-              </motion.div>
-            ) : (
-              <form onSubmit={handleSubmit} className="space-y-3.5">
-                <div>
-                  <label className="block text-[11px] uppercase tracking-wider text-[#0b231e]/80 mb-1 font-sans font-medium">Full Name *</label>
-                  <input suppressHydrationWarning
-                    type="text" 
+            <form onSubmit={handleSubmit} className="space-y-3.5">
+              <div>
+                <label className="block text-[11px] uppercase tracking-wider text-[#0b231e]/80 mb-1 font-sans font-medium">Full Name *</label>
+                <input suppressHydrationWarning
+                  type="text" 
+                  required
+                  placeholder="Enter your name" 
+                  value={formData.name}
+                  onChange={(e) => setFormData({...formData, name: e.target.value})}
+                  className="w-full bg-white border border-[#c5a059]/30 rounded-xl px-4 py-2.5 text-sm text-[#0b231e] placeholder-[#0b231e]/30 focus:outline-none focus:border-[#c5a059] transition-all"
+                />
+              </div>
+
+              <div>
+                <label className="block text-[11px] uppercase tracking-wider text-[#0b231e]/80 mb-1 font-sans font-medium">Email Address</label>
+                <input suppressHydrationWarning
+                  type="email" 
+                  placeholder="name@example.com" 
+                  value={formData.email}
+                  onChange={(e) => setFormData({...formData, email: e.target.value})}
+                  className="w-full bg-white border border-[#c5a059]/30 rounded-xl px-4 py-2.5 text-sm text-[#0b231e] placeholder-[#0b231e]/30 focus:outline-none focus:border-[#c5a059] transition-all"
+                />
+              </div>
+
+              <div>
+                <label className="block text-[11px] uppercase tracking-wider text-[#0b231e]/80 mb-1 font-sans font-medium">Phone Number *</label>
+                <div className="flex">
+                  <span className="inline-flex items-center px-3 rounded-l-xl border border-r-0 border-[#c5a059]/30 bg-[#fbf9f5] text-[#0b231e] text-sm">
+                    +91
+                  </span>
+                  <input 
+                    type="tel" 
                     required
-                    placeholder="Enter your name" 
-                    value={formData.name}
-                    onChange={(e) => setFormData({...formData, name: e.target.value})}
-                    className="w-full bg-white border border-[#c5a059]/30 rounded-xl px-4 py-2.5 text-sm text-[#0b231e] placeholder-[#0b231e]/30 focus:outline-none focus:border-[#c5a059] transition-all"
+                    placeholder="98765 43210" 
+                    value={formData.phone}
+                    onChange={(e) => setFormData({...formData, phone: e.target.value})}
+                    className="w-full bg-white border border-[#c5a059]/30 rounded-r-xl px-4 py-2.5 text-sm text-[#0b231e] placeholder-[#0b231e]/30 focus:outline-none focus:border-[#c5a059] transition-all"
                   />
                 </div>
+              </div>
 
-                <div>
-                  <label className="block text-[11px] uppercase tracking-wider text-[#0b231e]/80 mb-1 font-sans font-medium">Email Address</label>
-                  <input suppressHydrationWarning
-                    type="email" 
-                    placeholder="name@example.com" 
-                    value={formData.email}
-                    onChange={(e) => setFormData({...formData, email: e.target.value})}
-                    className="w-full bg-white border border-[#c5a059]/30 rounded-xl px-4 py-2.5 text-sm text-[#0b231e] placeholder-[#0b231e]/30 focus:outline-none focus:border-[#c5a059] transition-all"
-                  />
-                </div>
+              <button 
+                type="submit"
+                disabled={isSubmitting}
+                className="w-full py-3.5 mt-2 rounded-xl bg-gradient-to-r from-[#dfc184] via-[#c5a059] to-[#9a7b3c] text-[#0b231e] font-bold text-xs tracking-[0.2em] uppercase shadow-md hover:opacity-95 transition-all cursor-pointer font-sans disabled:opacity-50"
+              >
+                {isSubmitting ? "Processing..." : "Get Instant Details & Pricing"}
+              </button>
 
-                <div>
-                  <label className="block text-[11px] uppercase tracking-wider text-[#0b231e]/80 mb-1 font-sans font-medium">Phone Number *</label>
-                  <div className="flex">
-                    <span className="inline-flex items-center px-3 rounded-l-xl border border-r-0 border-[#c5a059]/30 bg-[#fbf9f5] text-[#0b231e] text-sm">
-                      +91
-                    </span>
-                    <input 
-                      type="tel" 
-                      required
-                      placeholder="98765 43210" 
-                      value={formData.phone}
-                      onChange={(e) => setFormData({...formData, phone: e.target.value})}
-                      className="w-full bg-white border border-[#c5a059]/30 rounded-r-xl px-4 py-2.5 text-sm text-[#0b231e] placeholder-[#0b231e]/30 focus:outline-none focus:border-[#c5a059] transition-all"
-                    />
-                  </div>
-                </div>
-
-                <button 
-                  type="submit"
-                  className="w-full py-3.5 mt-2 rounded-xl bg-gradient-to-r from-[#dfc184] via-[#c5a059] to-[#9a7b3c] text-[#0b231e] font-bold text-xs tracking-[0.2em] uppercase shadow-md hover:opacity-95 transition-all cursor-pointer font-sans"
-                >
-                  Get Instant Details & Pricing
-                </button>
-
-                <p className="text-[10px] text-center text-[#0b231e]/50 pt-1 font-sans">
-                  *Your details are secure with us. By submitting, you authorize a call/WhatsApp.
-                </p>
-              </form>
-            )}
+              <p className="text-[10px] text-center text-[#0b231e]/50 pt-1 font-sans">
+                *Your details are secure with us. By submitting, you authorize a call/WhatsApp.
+              </p>
+            </form>
 
           </div>
         </div>
