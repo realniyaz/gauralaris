@@ -10,7 +10,7 @@ export default function Hero() {
   const router = useRouter();
   const [currentBanner, setCurrentBanner] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [formData, setFormData] = useState({ name: "", email: "", phone: "" });
+  const [formData, setFormData] = useState({ name: "", email: "", countryCode: "+91", phone: "" });
 
   // Cinematic automatic background slideshow every 6 seconds
   useEffect(() => {
@@ -34,6 +34,7 @@ export default function Hero() {
         body: JSON.stringify({
           name: formData.name,
           email: formData.email,
+          countryCode: formData.countryCode,
           phone: formData.phone,
           domain: typeof window !== "undefined" ? window.location.hostname : "",
         }),
@@ -162,10 +163,17 @@ export default function Hero() {
               <div>
                 <label className="block text-[11px] uppercase tracking-wider text-[#0b231e]/80 mb-1 font-sans font-medium">Phone Number *</label>
                 <div className="flex">
-                  <span className="inline-flex items-center px-3 rounded-l-xl border border-r-0 border-[#c5a059]/30 bg-[#fbf9f5] text-[#0b231e] text-sm">
-                    +91
-                  </span>
-                  <input 
+                  <select
+                    value={formData.countryCode}
+                    onChange={(e) => setFormData({ ...formData, countryCode: e.target.value })}
+                    className="inline-flex items-center px-2 sm:px-3 rounded-l-xl border border-r-0 border-[#c5a059]/30 bg-[#fbf9f5] text-[#0b231e] text-xs sm:text-sm focus:outline-none focus:border-[#c5a059] cursor-pointer"
+                  >
+                    <option value="+1">+1 (US/CA)</option>
+                    <option value="+44">+44 (UK)</option>
+                    <option value="+971">+971 (UAE)</option>
+                  </select>
+
+                  <input  suppressHydrationWarning
                     type="tel" 
                     required
                     placeholder="98765 43210" 
@@ -176,7 +184,7 @@ export default function Hero() {
                 </div>
               </div>
 
-              <button 
+              <button suppressHydrationWarning
                 type="submit"
                 disabled={isSubmitting}
                 className="w-full py-3.5 mt-2 rounded-xl bg-gradient-to-r from-[#dfc184] via-[#c5a059] to-[#9a7b3c] text-[#0b231e] font-bold text-xs tracking-[0.2em] uppercase shadow-md hover:opacity-95 transition-all cursor-pointer font-sans disabled:opacity-50"
