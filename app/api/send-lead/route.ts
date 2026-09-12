@@ -14,7 +14,7 @@ export async function POST(request: Request) {
     // Sending the email via Resend
     // Note: If you haven't verified a custom domain yet, Resend allows sending from onboarding@resend.dev to your verified account email.
     const data = await resend.emails.send({
-      from: "Gaur Alaris Leads <sales@gauryamunaproject.in>",
+      from: "Gaur Alaris Leads <onboarding@resend.dev>",
       to: ["realtyfmleads@gmail.com"],
       subject: `New Lead from ${domain || "Website"} (Gaur Alaris)`,
       html: `
